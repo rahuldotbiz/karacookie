@@ -10,23 +10,30 @@ RES_DIR     := $(CONTENTS)/Resources
 # Optional: export DEVELOPER_ID="Developer ID Application: Your Name (TEAMID)"
 SIGN_IDENTITY ?= $(DEVELOPER_ID)
 
-.PHONY: all build bundle run clean sign verify notarize dmg
+.PHONY: all build bundle run clean sign verify notarize dmg icon
 
 all: bundle
 
 build:
 	swift build -c release --product $(APP_NAME)
 
-bundle: build
+bundle: build icon
 	@rm -rf $(APP_BUNDLE)
 	@mkdir -p $(MACOS_DIR) $(RES_DIR)
 	@cp $(BUILD_DIR)/release/$(APP_NAME) $(MACOS_DIR)/$(APP_NAME)
 	@cp Sources/$(APP_NAME)/Info.plist $(CONTENTS)/Info.plist
+	@cp Resources/$(APP_NAME).icns $(RES_DIR)/$(APP_NAME).icns
 	@printf 'APPL????' > $(CONTENTS)/PkgInfo
 	@codesign --force --sign - \
 		--entitlements Sources/$(APP_NAME)/$(APP_NAME).entitlements \
 		$(APP_BUNDLE) 2>/dev/null || true
 	@echo "Built $(APP_BUNDLE)"
+
+icon:
+	@if [ ! -f Resources/$(APP_NAME).icns ]; then \
+		echo "Generating app icon…"; \
+		swift tools/make-icon.swift; \
+	fi
 
 run: bundle
 	open $(APP_BUNDLE)
