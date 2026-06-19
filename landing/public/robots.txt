@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://karacookie.app/sitemap-index.xml

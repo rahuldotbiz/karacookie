@@ -1,0 +1,14 @@
+.build/
+.swiftpm/
+DerivedData/
+*.xcodeproj
+*.xcworkspace
+xcuserdata/
+*.xcscmblueprint
+Package.resolved
+.DS_Store
+*.app
+*.dmg
+*.zip
+secrets.local
+.env
